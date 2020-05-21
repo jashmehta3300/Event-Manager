@@ -30,9 +30,10 @@ app.use('/graphql',graphqlHttp({
 			const eventName = args.name;
 			return eventName;
 		}
-	}
-}
-);
+	},
+	//default ui by graphql (like dev tools)
+	graphiql: true
+}));
 
 app.listen(3000);
 
