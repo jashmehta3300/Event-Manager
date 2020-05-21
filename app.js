@@ -9,10 +9,18 @@ app.use(bodyParser.json());
 
 app.use('/graphql',graphqlHttp({
 	schema: buildSchema(`
-		type rootQuery {
+		// this is how my event object will look like
+		type Event {
+			_id: ID!
+			title: String!
+			description: String!
+			price: Float!
+			date: String!
+		}
+		type RootQuery {
 			events: [String!]!
 		}
-		type rootMutation {
+		type RootMutation {
 			createEvent(name: String): String
 		}
 		schema {
