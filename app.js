@@ -1,48 +1,60 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const graphqlHttp = require('express-graphql');
-const {buildSchema} = require('graphql');
+const { buildSchema } = require('graphql');
 
 const app = express();
 
+const events = [];
+
 app.use(bodyParser.json());
 
-app.use('/graphql',graphqlHttp({
-	schema: buildSchema(`
-		// this is how my event object will look like
-		type Event {
-			_id: ID!
-			title: String!
-			description: String!
-			price: Float!
-			date: String!
-		}
-		type RootQuery {
-			events: [String!]!
-		}
-		type RootMutation {
-			createEvent(name: String): String
-		}
-		schema {
-			query: rootQuery,
-			mutation: rootMutation
-		}
-	`),
-	//bundle of all resolvers
-	rootValue: {
-		//controller functions(same name as written in type)
-		events: () => {
-			return ['Cooking','Sailing','coding'];
+app.use(
+	'/graphql',
+	graphqlHttp({
+		schema: buildSchema(`
+        type Event {
+          _id: ID!
+          title: String!
+          description: String!
+          price: Float!
+          date: String!
+        }
+        input EventInput {
+          title: String!
+          description: String!
+          price: Float!
+          date: String!
+        }
+        type RootQuery {
+            events: [Event!]!
+        }
+        type RootMutation {
+            createEvent(eventInput: EventInput): Event
+        }
+        schema {
+            query: RootQuery
+            mutation: RootMutation
+        }
+    `),
+		rootValue: {
+			events: () => {
+				return events;
+			},
+			createEvent: args => {
+				const event = {
+					_id: Math.random().toString(),
+					title: args.eventInput.title,
+					description: args.eventInput.description,
+					price: +args.eventInput.price,
+					date: args.eventInput.date
+				};
+				events.push(event);
+				return event;
+			}
 		},
-		createEvent: (args) => {
-			const eventName = args.name;
-			return eventName;
-		}
-	},
-	//default ui by graphql (like dev tools)
-	graphiql: true
-}));
+		graphiql: true
+	})
+);
 
 app.listen(3000);
-
-
