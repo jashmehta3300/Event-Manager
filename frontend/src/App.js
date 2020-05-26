@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom';
 import AuthPage from './pages/Auth';
 import BookingsPage from './pages/Bookings';
 import EventsPage from './pages/Events';
+import RegisterPage from './pages/Register';
 import MainNavigation from './components/Navigation/MainNavigation';
 
 import './App.css';
@@ -18,6 +19,7 @@ class App extends Component {
             <Switch>
               <Redirect from="/" to="/auth" exact />
               <Route path="/auth" component={AuthPage} />
+              <Route path="/register" component={RegisterPage} />
               <Route path="/events" component={EventsPage} />
               <Route path="/bookings" component={BookingsPage} />
             </Switch>

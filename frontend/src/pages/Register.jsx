@@ -33,14 +33,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function AuthPage(props) {
+export default function RegisterPage(props) {
   const classes = useStyles();
 
   const [values, setValues] = React.useState({
     email: '',
     password: '',
   });
-
 
   const handleChange = (prop) => (event) => {
     setValues({
@@ -52,55 +51,6 @@ export default function AuthPage(props) {
   const submitHandler = (e) => {
     e.preventDefault();
     console.log(values);
-
-    if (values.email.trim().length === 0 || values.password.trim().length === 0) {
-      return;
-    }
-
-    let requestBody = {
-      query: `
-        query {
-          login(email: "${values.email}", password: "${values.password}") {
-            userId
-            token
-            tokenExpiration
-          }
-        }
-      `,
-    };
-
-    // if (!this.state.isLogin) {
-    //   requestBody = {
-    //     query: `
-    //       mutation {
-    //         createUser(userInput: {email: "${email}", password: "${password}"}) {
-    //           _id
-    //           email
-    //         }
-    //       }
-    //     `,
-    //   };
-    // }
-
-    fetch('http://localhost:8000/graphql', {
-      method: 'POST',
-      body: JSON.stringify(requestBody),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((res) => {
-        if (res.status !== 200 && res.status !== 201) {
-          throw new Error('Failed!');
-        }
-        return res.json();
-      })
-      .then((resData) => {
-        console.log(resData);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
   };
 
   return (
@@ -111,7 +61,7 @@ export default function AuthPage(props) {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Login
+          Register
         </Typography>
         <form className={classes.form} noValidate>
           <TextField
@@ -146,12 +96,15 @@ export default function AuthPage(props) {
             className={classes.submit}
             onClick={submitHandler}
           >
-            Login
+            Register
           </Button>
           <Grid container>
             <Grid item xs>
-              <Link href="/register" variant="body2" style={{marginLeft: '30px'}}>
-                If you have not registered yet, click here!
+              <Link
+                href="/register"
+                variant="body2"
+                style={{ marginLeft: '30px' }}
+              >
               </Link>
             </Grid>
           </Grid>
