@@ -9,6 +9,8 @@ const colors = require('colors');
 const graphQlSchema = require('./graphql/schema/index');
 const graphQlResolvers = require('./graphql/resolvers/index');
 
+const isAuth = require('./middleware/is-auth')
+
 //load env vars
 dotenv.config({
   path: './config/config.env'
@@ -20,6 +22,8 @@ connectDB();
 const app = express();
 
 app.use(bodyParser.json());
+
+app.use(isAuth);
 
 app.use(
   '/graphql',
