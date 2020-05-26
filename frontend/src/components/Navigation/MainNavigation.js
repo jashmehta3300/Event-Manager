@@ -15,9 +15,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function MainNavigation() {
+export default function MainNavigation(props) {
   const classes = useStyles();
-
+  const logoutUser = () => {
+    localStorage.clear();
+    window.location.reload()
+  }
   return (
     <div className={classes.root}>
       <AppBar position="static">
@@ -28,12 +31,21 @@ export default function MainNavigation() {
           <Link to="/events" style={{ textDecoration: 'none', color: 'white' }}>
             <Button color="inherit">Events</Button>
           </Link>
-          <Link to="/bookings" style={{ textDecoration: 'none', color: 'white' }}>
+          <Link
+            to="/bookings"
+            style={{ textDecoration: 'none', color: 'white' }}
+          >
             <Button color="inherit">Bookings</Button>
           </Link>
-          <Link to="/auth" style={{ textDecoration: 'none', color: 'white' }}>
-            <Button color="inherit">Login</Button>
-          </Link>
+          {localStorage.getItem('token') ? (
+            <Link to="/auth" style={{ textDecoration: 'none', color: 'white' }}>
+              <Button color="inherit" onClick={logoutUser}>Logout</Button>
+            </Link>
+          ) : (
+            <Link to="/auth" style={{ textDecoration: 'none', color: 'white' }}>
+              <Button color="inherit">Login</Button>
+            </Link>
+          )}
         </Toolbar>
       </AppBar>
     </div>

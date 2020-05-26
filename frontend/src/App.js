@@ -17,8 +17,18 @@ class App extends Component {
           <MainNavigation />
           <main className="main-content">
             <Switch>
-              <Redirect from="/" to="/auth" exact />
-              <Route path="/auth" component={AuthPage} />
+              {!localStorage.getItem('token') && (
+                <Redirect from="/" to="/auth" exact />
+              )}
+              {localStorage.getItem('token') && (
+                <Redirect from="/" to="/events" exact />
+              )}
+              {localStorage.getItem('token') && (
+                <Redirect from="/auth" to="/events" exact />
+              )}
+              {!localStorage.getItem('token') && (
+                <Route path="/auth" component={AuthPage} />
+              )}
               <Route path="/register" component={RegisterPage} />
               <Route path="/events" component={EventsPage} />
               <Route path="/bookings" component={BookingsPage} />

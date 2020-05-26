@@ -69,18 +69,6 @@ export default function AuthPage(props) {
       `,
     };
 
-    // if (!this.state.isLogin) {
-    //   requestBody = {
-    //     query: `
-    //       mutation {
-    //         createUser(userInput: {email: "${email}", password: "${password}"}) {
-    //           _id
-    //           email
-    //         }
-    //       }
-    //     `,
-    //   };
-    // }
 
     fetch('http://localhost:8000/graphql', {
       method: 'POST',
@@ -93,10 +81,15 @@ export default function AuthPage(props) {
         if (res.status !== 200 && res.status !== 201) {
           throw new Error('Failed!');
         }
+        if (res.status === 200){
+            props.history.push('/events');
+        }
         return res.json();
       })
       .then((resData) => {
         console.log(resData);
+        localStorage.setItem('token', resData.data.login.token);
+        localStorage.setItem('user_id', resData.data.login.userId);
       })
       .catch((err) => {
         console.log(err);

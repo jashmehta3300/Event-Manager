@@ -51,6 +51,41 @@ export default function RegisterPage(props) {
   const submitHandler = (e) => {
     e.preventDefault();
     console.log(values);
+
+    let requestBody = {
+        query: `
+          mutation {
+            createUser(userInput: {email: "${values.email}", password: "${values.password}"}) {
+              _id
+              email
+            }
+          }
+        `,
+    };
+
+    fetch('http://localhost:8000/graphql', {
+      method: 'POST',
+      body: JSON.stringify(requestBody),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => {
+        if (res.status !== 200 && res.status !== 201) {
+          throw new Error('Failed!');
+        }
+        if (res.status === 200){
+            props.history.push('/auth');
+        }
+        return res.json();
+      })
+      .then((resData) => {
+        console.log(resData);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
   };
 
   return (
