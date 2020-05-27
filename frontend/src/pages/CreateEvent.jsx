@@ -85,7 +85,7 @@ export default function CreateEvent(props) {
         return res.json();
       })
       .then(resData => {
-        if(resData.data.createEvent.description){
+        if(resData){
           props.history.push('/events');
         }
       })
