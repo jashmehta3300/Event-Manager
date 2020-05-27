@@ -70,7 +70,7 @@ export default function AuthPage(props) {
     };
 
 
-    fetch('http://localhost:8000/graphql', {
+    fetch('http://localhost:5000/graphql', {
       method: 'POST',
       body: JSON.stringify(requestBody),
       headers: {

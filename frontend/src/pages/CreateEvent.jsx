@@ -1,11 +1,7 @@
 import React from 'react';
-import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import Link from '@material-ui/core/Link';
-import Grid from '@material-ui/core/Grid';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
@@ -33,12 +29,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function RegisterPage(props) {
+export default function CreateEvent(props) {
   const classes = useStyles();
 
   const [values, setValues] = React.useState({
-    email: '',
-    password: '',
+    title: '',
+    description: '',
+    price: ''
   });
 
   const handleChange = (prop) => (event) => {
@@ -50,53 +47,60 @@ export default function RegisterPage(props) {
 
   const submitHandler = (e) => {
     e.preventDefault();
-    console.log(values);
 
-    let requestBody = {
-        query: `
+    const requestBody = {
+      query: `
           mutation {
-            createUser(userInput: {email: "${values.email}", password: "${values.password}"}) {
+            createEvent(eventInput: {title: "${values.title}", description: "${values.description}", price: ${parseFloat(values.price).toFixed(2)}, date: "2020-05-26T15:59:26.693Z"}) {
               _id
-              email
+              title
+              description
+              date
+              price
+              creator {
+                _id
+                email
+              }
             }
           }
         `,
     };
+
+    const word = 'Bearer ';
+    const tokenFinal = word.concat(`${localStorage.getItem('token')}`);
 
     fetch('http://localhost:5000/graphql', {
       method: 'POST',
       body: JSON.stringify(requestBody),
       headers: {
         'Content-Type': 'application/json',
-      },
+        'Authorization': tokenFinal
+      }
     })
-      .then((res) => {
+      .then(res => {
         if (res.status !== 200 && res.status !== 201) {
           throw new Error('Failed!');
         }
-        if (res.status === 200){
-            props.history.push('/auth');
-        }
+        console.log('EVENT ADDED !!!');
         return res.json();
       })
-      .then((resData) => {
-        console.log(resData);
+      .then(resData => {
+        if(resData.data.createEvent.description){
+          props.history.push('/events');
+        }
       })
-      .catch((err) => {
+      .catch(err => {
         console.log(err);
       });
-
   };
+
 
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
         <Typography component="h1" variant="h5">
-          Register
+          Create a new event!
         </Typography>
         <form className={classes.form} noValidate>
           <TextField
@@ -104,11 +108,11 @@ export default function RegisterPage(props) {
             margin="normal"
             required
             fullWidth
-            id="email"
-            label="Email-ID"
-            name="email"
+            id="title"
+            label="Title"
+            name="title"
             autoComplete="admin"
-            onChange={handleChange('email')}
+            onChange={handleChange('title')}
             autoFocus
           />
           <TextField
@@ -116,12 +120,20 @@ export default function RegisterPage(props) {
             margin="normal"
             required
             fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            onChange={handleChange('password')}
-            autoComplete="current-password"
+            name="description"
+            label="Description"
+            id="description"
+            onChange={handleChange('description')}
+          />
+          <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            name="price"
+            label="Price"
+            id="price"
+            onChange={handleChange('price')}
           />
           <Button
             type="submit"
@@ -131,18 +143,8 @@ export default function RegisterPage(props) {
             className={classes.submit}
             onClick={submitHandler}
           >
-            Register
+            Create
           </Button>
-          <Grid container>
-            <Grid item xs>
-              <Link
-                href="/register"
-                variant="body2"
-                style={{ marginLeft: '30px' }}
-              >
-              </Link>
-            </Grid>
-          </Grid>
         </form>
       </div>
     </Container>
